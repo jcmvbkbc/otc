@@ -1,0 +1,596 @@
+%{
+#include "otc.h"
+int yylex (void);
+int yyerror(const char*);
+extern char *yytext;
+%}
+
+%error-verbose
+
+%token TOKEN_EQ
+%token TOKEN_AND
+%token TOKEN_ARROW
+%token TOKEN_ADDITIVE_OPERATOR
+%token TOKEN_IDENTIFIER
+%token TOKEN_NUMBER
+%token TOKEN_SIZED_NUMBER
+
+%token TOKEN_IN
+%token TOKEN_OUT
+%token TOKEN_INOUT
+
+%token TOKEN_IMMEDIATE_RANGE
+
+%token TOKEN_TABLE
+
+%token TOKEN_STATE
+%token TOKEN_ADD_READ_WRITE
+%token TOKEN_SHARED_OR
+%token TOKEN_EXPORT
+
+%token TOKEN_REGFILE
+%token TOKEN_PORT
+%token TOKEN_VIEW
+
+%token TOKEN_INTERFACE
+%token TOKEN_CORE
+
+%token TOKEN_OPERATION
+
+%token TOKEN_SCHEDULE
+%token TOKEN_STAGE_NAME
+%token TOKEN_DEF
+%token TOKEN_USE
+
+%token TOKEN_SEMANTIC
+
+%token TOKEN_LENGTH
+%token TOKEN_INST_BUF
+
+%token TOKEN_FORMAT
+
+%token TOKEN_SLOT
+
+%token TOKEN_SLOT_OPCODES
+
+%token TOKEN_IMPORT_WIRE
+
+%token TOKEN_QUEUE
+
+%token TOKEN_LOOKUP
+%token TOKEN_RDY
+
+%token TOKEN_CTYPE
+%token TOKEN_DEFAULT
+
+%token TOKEN_PROTO
+%token TOKEN_IMMEDIATE
+
+%token TOKEN_USER_REGISTER
+
+%token TOKEN_COPROCESSOR
+
+%token TOKEN_FUNCTION
+%token TOKEN_SHARED
+%token TOKEN_SLOT_SHARED
+
+%token TOKEN_FIELD
+
+%token TOKEN_OPCODE
+
+%token TOKEN_OPERAND
+
+%token TOKEN_ICLASS
+
+%token TOKEN_REFERENCE
+
+%token TOKEN_IMAP
+
+%token TOKEN_CSTUB_SWAP
+
+%token TOKEN_PROPERTY
+%token TOKEN_SPECIALIZED_OP
+
+%token TOKEN_OPERATOR
+%token TOKEN_RELATIONAL_OPERATOR
+%token TOKEN_BITWISE_OPERATOR
+
+%token TOKEN_OPERAND_MAP
+
+%token TOKEN_OPERAND_SEM
+%token TOKEN_OPERAND_HW_DECODE
+
+%%
+Program: SectionSequence
+	;
+
+SectionSequence: Section
+	| SectionSequence Section
+	;
+
+Section: ImmediateRange
+	| Table
+	| State
+	| RegFile
+	| Interface
+	| Operation
+	| Schedule
+	| Semantic
+	| Length
+	| Format
+	| Slot
+	| SlotOpcodes
+	| ImportWire
+	| Queue
+	| Lookup
+	| CType
+	| Proto
+	| UserRegister
+	| Coprocessor
+	| Function
+	| Field
+	| Opcode
+	| Operand
+	| IClass
+	| Reference
+	| IMap
+	| CStubSwap
+	| Property
+	| Operator
+	| OperandMap
+	| OperandSem
+	;
+
+Number: TOKEN_NUMBER
+	| TOKEN_ADDITIVE_OPERATOR TOKEN_NUMBER
+	;
+
+NumberList: Number
+	| NumberList ',' Number
+	;
+
+IdentifierList: TOKEN_IDENTIFIER
+	| IdentifierList ',' TOKEN_IDENTIFIER
+	;
+
+OptionalIdentifier: /**/
+	| TOKEN_IDENTIFIER
+	;
+
+OptionalNumber: /**/
+	| Number
+	;
+
+OptionalSizedNumber: /**/
+	| TOKEN_SIZED_NUMBER
+	;
+
+
+ImmediateRange: TOKEN_IMMEDIATE_RANGE TOKEN_IDENTIFIER Number Number Number {}
+	;
+
+
+Table: TOKEN_TABLE TOKEN_IDENTIFIER Number Number '{' NumberList '}' {}
+	;
+
+
+State: TOKEN_STATE TOKEN_IDENTIFIER Number OptionalSizedNumber StateOptionList
+	;
+
+StateOptionList: /**/
+	| StateOptionList StateOption
+	;
+
+StateOption: TOKEN_ADD_READ_WRITE
+	| TOKEN_SHARED_OR
+	| TOKEN_EXPORT
+	;
+
+
+RegFile: TOKEN_REGFILE TOKEN_IDENTIFIER Number Number TOKEN_IDENTIFIER Groups
+	;
+
+Groups: GroupList TOKEN_PORT
+	| GroupList TOKEN_VIEW
+	;
+
+GroupList: Group
+	| GroupList Group
+	;
+
+Group: TOKEN_IDENTIFIER '=' Number
+	;
+
+
+Interface: TOKEN_INTERFACE TOKEN_IDENTIFIER Number TOKEN_CORE Direction2
+	;
+
+Direction2: TOKEN_IN
+	| TOKEN_OUT
+	;
+
+
+Operation: TOKEN_OPERATION TOKEN_IDENTIFIER '{' OptionalArgumentList '}' '{' OptionalStateInterfaceList '}' Computation
+	;
+
+OptionalArgumentList: /**/
+	| ArgumentList
+	;
+
+ArgumentList: Argument
+	| ArgumentList ',' Argument
+	;
+
+Argument: Direction3 TypedArgument
+	| Direction3 '*' TypedArgument
+	;
+
+Direction3: Direction2
+	| TOKEN_INOUT
+	;
+
+TypedArgument: TOKEN_IDENTIFIER TOKEN_IDENTIFIER
+	;
+
+OptionalStateInterfaceList: /**/
+	| StateInterfaceList
+	;
+
+StateInterfaceList: StateInterface
+	| StateInterfaceList ',' StateInterface
+	;
+
+StateInterface: Direction3 TOKEN_IDENTIFIER
+	;
+
+Computation: /**/
+	| '{' ComputationBody '}'
+	;
+
+
+Schedule: TOKEN_SCHEDULE TOKEN_IDENTIFIER '{' OpcodeList '}' '{' UseDefList '}'
+	;
+
+OpcodeList: IdentifierList
+	;
+
+UseDefList: UseDef
+	| UseDefList UseDef
+	;
+
+UseDef: UseOrDef TOKEN_IDENTIFIER Stage
+	;
+
+UseOrDef: TOKEN_USE
+	| TOKEN_DEF
+	;
+
+Stage: TOKEN_NUMBER
+	| SymbolicStageName
+	| SymbolicStageName TOKEN_ADDITIVE_OPERATOR Number
+	;
+
+SymbolicStageName: TOKEN_STAGE_NAME
+	;
+
+
+Semantic: TOKEN_SEMANTIC TOKEN_IDENTIFIER '{' IdentifierList '}' '{' ComputationBody '}'
+
+
+Length: TOKEN_LENGTH TOKEN_IDENTIFIER Number DecodingExpr
+	;
+
+DecodingExpr: '{' DecodingConstraint '}'
+	;
+
+DecodingConstraint: TOKEN_INST_BUF '[' SliceOrNumber ']' TOKEN_EQ TOKEN_SIZED_NUMBER
+	;
+
+SliceOrNumber: Slice
+	| Number
+	;
+
+Slice: Number ':' Number
+	;
+
+
+Format: TOKEN_FORMAT TOKEN_IDENTIFIER FormatSyntax
+	;
+
+FormatSyntax: Number '{' IdentifierList '}'
+	| TOKEN_IDENTIFIER '{' IdentifierList '}' FormatDecodingExpr
+	;
+
+FormatDecodingExpr: /**/
+	| '{' DecodingConstraint '}'
+	| '{' DecodingConstraint TOKEN_AND DecodingConstraint '}'
+	;
+
+
+Slot: TOKEN_SLOT TOKEN_IDENTIFIER SubRange
+	;
+
+SubRange: SubRangeDef
+	| '{' SubRangeList '}'
+	;
+
+SubRangeList: SubRangeDef
+	| SubRangeList ',' SubRangeDef
+	;
+
+SubRangeDef: TOKEN_IDENTIFIER
+	| TOKEN_IDENTIFIER '[' Slice ']'
+	;
+
+
+SlotOpcodes: TOKEN_SLOT_OPCODES TOKEN_IDENTIFIER '{' IdentifierList '}'
+	;
+
+
+ImportWire: TOKEN_IMPORT_WIRE TOKEN_IDENTIFIER Number
+	;
+
+
+Queue: TOKEN_QUEUE TOKEN_IDENTIFIER Number Direction2
+	;
+
+
+Lookup: TOKEN_LOOKUP TOKEN_IDENTIFIER '{' Number ',' Stage '}' '{' Number ',' Stage '}' LookupRdy
+	;
+
+LookupRdy: /**/
+	| TOKEN_RDY
+	;
+
+
+CType: TOKEN_CTYPE TOKEN_IDENTIFIER Number Number TOKEN_IDENTIFIER CTypeAttr
+	;
+
+CTypeAttr: TOKEN_DEFAULT
+	| '{' CTypeList '}'
+	;
+
+CTypeList: CTypeDef ',' CTypeDef
+	| CTypeList ',' CTypeDef
+	;
+
+CTypeDef: TOKEN_IDENTIFIER TOKEN_IDENTIFIER
+	;
+
+
+Proto: TOKEN_PROTO TOKEN_IDENTIFIER '{' ProtoArgList '}' '{' TempArgList '}' '{' CodeList '}'
+	;
+
+ProtoArgList: ProtoArg
+	| ProtoArgList ',' ProtoArg
+	;
+
+ProtoArg: Direction3 CTypeRef TOKEN_IDENTIFIER
+	| Direction3 CTypeRef '*' TOKEN_IDENTIFIER
+	;
+
+CTypeRef: TOKEN_IMMEDIATE
+	| TOKEN_IDENTIFIER
+	;
+
+TempArgList: TempArg
+	| TempArgList ',' TempArg
+	;
+
+TempArg: CTypeRef TOKEN_IDENTIFIER
+	;
+
+CodeList: Code ';'
+	| CodeList Code ';'
+	;
+
+Code: TOKEN_IDENTIFIER ArgExprList
+	;
+
+ArgExprList: ArgExpr
+	| ArgExprList ',' ArgExpr
+	;
+
+ArgExpr: TOKEN_IDENTIFIER
+	| TOKEN_IDENTIFIER TOKEN_ADDITIVE_OPERATOR Number
+	| Number
+	| TOKEN_IDENTIFIER TOKEN_ARROW TOKEN_IDENTIFIER
+	;
+
+
+UserRegister: TOKEN_USER_REGISTER TOKEN_IDENTIFIER OptionalNumber SubRange
+	;
+
+
+Coprocessor: TOKEN_COPROCESSOR TOKEN_IDENTIFIER OptionalNumber '{' IdentifierList '}'
+	;
+
+
+Function: TOKEN_FUNCTION OptionalSlice TOKEN_IDENTIFIER '(' FunctionArgList ')' FunctionOption '{' ComputationBody '}'
+	;
+
+OptionalSlice: /**/
+	| '[' Slice ']'
+	;
+
+FunctionArgList: FunctionArg
+	| FunctionArgList ',' FunctionArg
+	;
+
+FunctionArg: OptionalSlice TOKEN_IDENTIFIER
+	;
+
+FunctionOption: /**/
+	| TOKEN_SHARED
+	| TOKEN_SLOT_SHARED
+	;
+
+
+Field: TOKEN_FIELD TOKEN_IDENTIFIER FieldOptions
+	;
+
+FieldOptions: TOKEN_IDENTIFIER '[' SliceOrNumber ']'
+	| IdentifierList
+	| Number
+	;
+
+
+Opcode: TOKEN_OPCODE TOKEN_IDENTIFIER EncodingList OptionalIdentifier
+	| TOKEN_OPCODE TOKEN_IDENTIFIER TOKEN_IDENTIFIER
+	;
+
+EncodingList: Encoding
+	| EncodingList Encoding
+	;
+
+Encoding: TOKEN_IDENTIFIER '=' TOKEN_SIZED_NUMBER
+	;
+
+
+Operand: TOKEN_OPERAND TOKEN_IDENTIFIER OperandField OperandType
+	;
+
+OperandField: TOKEN_IDENTIFIER
+	| '*'
+	;
+
+OperandType: TOKEN_IDENTIFIER
+	| '{' Expression '}' '{' Expression '}' OptionalHwDecodingExpr
+	;
+
+OptionalHwDecodingExpr: /**/
+	| '{' TOKEN_IDENTIFIER '}'
+	;
+
+
+IClass: TOKEN_ICLASS TOKEN_IDENTIFIER '{' IdentifierList '}' '{' OptionalOperandList '}' IclassOptions
+	;
+
+OptionalOperandList: /**/
+	| OperandList
+	;
+
+OperandList: Direction3 TOKEN_IDENTIFIER
+	| OperandList ',' Direction3 TOKEN_IDENTIFIER
+	;
+
+IclassOptions: /**/
+	| OperandList
+	| OperandList OperandList
+	;
+
+
+Reference: TOKEN_REFERENCE TOKEN_IDENTIFIER '{' ComputationBody '}'
+	;
+
+
+IMap: TOKEN_IMAP TOKEN_IDENTIFIER '{' ArgList '}' '{' IoPattern '}' '{' IoPattern '}'
+	;
+
+ArgList: ImapArg
+	| ArgList ',' ImapArg
+	;
+
+ImapArg: Direction3 ArgType TOKEN_IDENTIFIER
+	;
+
+ArgType: TOKEN_IMMEDIATE
+	| TOKEN_IDENTIFIER
+	;
+
+IoPattern: '{' OptionalImapTempArgList '}' '{' ImapCodeList '}'
+	;
+
+OptionalImapTempArgList: /**/
+	| ImapTempArgList
+	;
+
+ImapTempArgList: ImapTempArg
+	| ImapTempArgList ',' ImapTempArg
+	;
+
+ImapTempArg: TOKEN_IDENTIFIER TOKEN_IDENTIFIER
+	;
+
+ImapCodeList: ImapCode ';'
+	| ImapCodeList ImapCode ';'
+	;
+
+ImapCode: ImapInst
+	| Assignment
+	;
+
+ImapInst: TOKEN_IDENTIFIER OptionalImapArgumentList
+	;
+
+OptionalImapArgumentList: /**/
+	| ImapArgumentList
+	;
+
+ImapArgumentList: ImapArgument
+	| ImapArgumentList ',' ImapArgument
+	;
+
+ImapArgument: TOKEN_IDENTIFIER
+	| Number
+	;
+
+Assignment: TOKEN_IDENTIFIER '=' ImapArgument
+	;
+
+
+CStubSwap: TOKEN_CSTUB_SWAP TOKEN_IDENTIFIER '{' IdentifierList '}' '{' InterfaceSliceList '}'
+	;
+
+InterfaceSliceList: TOKEN_IDENTIFIER '[' Slice ']'
+	| InterfaceSliceList ',' TOKEN_IDENTIFIER '[' Slice ']'
+	;
+
+
+Property: TOKEN_PROPERTY TOKEN_SPECIALIZED_OP TOKEN_IDENTIFIER TOKEN_IDENTIFIER
+	;
+
+
+Operator: TOKEN_OPERATOR '"' OperatorSymbol '"' TOKEN_IDENTIFIER
+	;
+
+OperatorSymbol: TOKEN_ADDITIVE_OPERATOR
+	| MultiplicativeOperator
+	| TOKEN_RELATIONAL_OPERATOR
+	| TOKEN_BITWISE_OPERATOR
+	| '!'
+	;
+
+MultiplicativeOperator: '*'
+	| '/'
+	| '%'
+	;
+
+
+OperandMap: TOKEN_OPERAND_MAP TOKEN_IDENTIFIER TOKEN_IDENTIFIER TOKEN_IDENTIFIER
+	;
+
+
+OperandSem: TOKEN_OPERAND_SEM TOKEN_IDENTIFIER OperandSemType '{' TOKEN_IDENTIFIER ',' Number '}' '{' TOKEN_IDENTIFIER ',' Number '}' OperandOptions
+	;
+
+OperandSemType: TOKEN_IDENTIFIER
+	| TOKEN_IMMEDIATE
+	;
+
+OperandOptions: '{' Statements '}'
+	| '{' Expression '}' '{' Expression '}'
+	| '{' Expression '}' '{' Expression '}' TOKEN_OPERAND_HW_DECODE
+	;
+
+
+Statements: /**/
+	;
+
+Expression: /**/
+	;
+
+ComputationBody: /**/
+	;
+
+%%

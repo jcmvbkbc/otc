@@ -1,0 +1,103 @@
+%{
+#include <vector>
+#include <stdio.h>
+#include "otc-otc.hpp"
+#include "otc.h"
+%}
+
+%option nodebug
+
+Whitespace [ \t\v]+
+
+OctalLiteral "0"[0-7]*
+DecimalLiteral [1-9][0-9]*
+HexadecimalLiteral "0x"[0-9a-fA-F]+
+IntegerLiteral {OctalLiteral}|{DecimalLiteral}|{HexadecimalLiteral}
+
+SizedLiteral {DecimalLiteral}"'"[bdh][0-9a-fA-F]+
+
+Letter [a-zA-Z_]
+Digit [0-9]
+
+Identifier {Letter}({Letter}|{Digit})*
+AdditiveOperator [+-]
+RelationalOperator "=="|"!="|"<"|"<="|">"|">="
+BitwiseOperator [|&~^]
+Separator [{}():;,*!=]|"["|"]"
+Stage "Rstage"|"Estage"|"Mstage"|"Wstage"
+
+%x comment
+
+%%
+"/*"				BEGIN(comment);
+<comment>[^*\n]*		/* eat anything that's not a '*' */
+<comment>"*"+[^*/\n]*		/* eat up '*'s not followed by '/'s */
+<comment>"*"+"/"		BEGIN(INITIAL);
+
+<INITIAL,comment>\n+		{ Location::current.m_line += yyleng; }
+<*>\r+
+
+"in"				{ return TOKEN_IN; }
+"out"				{ return TOKEN_OUT; }
+"inout"				{ return TOKEN_INOUT; }
+"=="				{ return TOKEN_EQ; }
+"&&"				{ return TOKEN_AND; }
+"->"				{ return TOKEN_ARROW; }
+
+"immediate_range"		{ return TOKEN_IMMEDIATE_RANGE; }
+"table"				{ return TOKEN_TABLE; }
+"state"				{ return TOKEN_STATE; }
+"add_read_write"		{ return TOKEN_ADD_READ_WRITE; }
+"shared_or"			{ return TOKEN_SHARED_OR; }
+"export"			{ return TOKEN_EXPORT; }
+"regfile"			{ return TOKEN_REGFILE; }
+"port"				{ return TOKEN_PORT; }
+"view"				{ return TOKEN_VIEW; }
+"interface"			{ return TOKEN_INTERFACE; }
+"core"				{ return TOKEN_CORE; }
+"operation"			{ return TOKEN_OPERATION; }
+"schedule"			{ return TOKEN_SCHEDULE; }
+"def"				{ return TOKEN_DEF; }
+"use"				{ return TOKEN_USE; }
+"semantic"			{ return TOKEN_SEMANTIC; }
+"length"			{ return TOKEN_LENGTH; }
+"InstBuf"			{ return TOKEN_INST_BUF; }
+"slot"				{ return TOKEN_SLOT; }
+"slot_opcodes"			{ return TOKEN_SLOT_OPCODES; }
+"import_wire"			{ return TOKEN_IMPORT_WIRE; }
+"queue"				{ return TOKEN_QUEUE; }
+"lookup"			{ return TOKEN_LOOKUP; }
+"rdy"				{ return TOKEN_RDY; }
+"ctype"				{ return TOKEN_CTYPE; }
+"default"			{ return TOKEN_DEFAULT; }
+"proto"				{ return TOKEN_PROTO; }
+"immediate"			{ return TOKEN_IMMEDIATE; }
+"user_register"			{ return TOKEN_USER_REGISTER; }
+"coprocessor"			{ return TOKEN_COPROCESSOR; }
+"function"			{ return TOKEN_FUNCTION; }
+"shared"			{ return TOKEN_SHARED; }
+"slot_shared"			{ return TOKEN_SLOT_SHARED; }
+"field"				{ return TOKEN_FIELD; }
+"opcode"			{ return TOKEN_OPCODE; }
+"operand"			{ return TOKEN_OPERAND; }
+"iclass"			{ return TOKEN_ICLASS; }
+"reference"			{ return TOKEN_REFERENCE; }
+"imap"				{ return TOKEN_IMAP; }
+"cstub_swap"			{ return TOKEN_CSTUB_SWAP; }
+"property"			{ return TOKEN_PROPERTY; }
+"specialized_op"		{ return TOKEN_SPECIALIZED_OP; }
+"operator"			{ return TOKEN_OPERATOR; }
+"operand_map"			{ return TOKEN_OPERAND_MAP; }
+"operand_sem"			{ return TOKEN_OPERAND_SEM; }
+"operand_hw_decode"		{ return TOKEN_OPERAND_HW_DECODE; }
+
+{AdditiveOperator}		{ return TOKEN_ADDITIVE_OPERATOR; }
+{RelationalOperator}		{ return TOKEN_RELATIONAL_OPERATOR; }
+{BitwiseOperator}		{ return TOKEN_BITWISE_OPERATOR; }
+{Identifier}			{ return TOKEN_IDENTIFIER; }
+{IntegerLiteral}		{ return TOKEN_NUMBER; }
+{SizedLiteral}			{ return TOKEN_SIZED_NUMBER; }
+{Separator}			{ return *yytext; }
+{Stage}				{ return TOKEN_STAGE_NAME; }
+
+%%
