@@ -470,7 +470,9 @@ OptionalHwDecodingExpr: /**/
 	;
 
 
-IClass: TOKEN_ICLASS TOKEN_IDENTIFIER '{' IdentifierList '}' '{' OptionalOperandList '}' IclassOptions
+IClass: TOKEN_ICLASS TOKEN_IDENTIFIER '{' IdentifierList '}' '{' OptionalOperandList '}'
+	| TOKEN_ICLASS TOKEN_IDENTIFIER '{' IdentifierList '}' '{' OptionalOperandList '}' '{' OptionalOperandList '}'
+	| TOKEN_ICLASS TOKEN_IDENTIFIER '{' IdentifierList '}' '{' OptionalOperandList '}' '{' OptionalOperandList '}' '{' OptionalOperandList '}'
 	;
 
 OptionalOperandList: /**/
@@ -479,11 +481,6 @@ OptionalOperandList: /**/
 
 OperandList: Direction3 TOKEN_IDENTIFIER
 	| OperandList ',' Direction3 TOKEN_IDENTIFIER
-	;
-
-IclassOptions: /**/
-	| OperandList
-	| OperandList OperandList
 	;
 
 
