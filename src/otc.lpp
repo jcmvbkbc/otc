@@ -27,6 +27,8 @@ BitwiseOperator [|&~^]
 Separator [{}():;,*!=]|"["|"]"
 Stage "Rstage"|"Estage"|"Mstage"|"Wstage"
 
+StringLiteral "\""[^\"\n]*"\""
+
 %x comment line_comment
 
 %%
@@ -94,6 +96,7 @@ Stage "Rstage"|"Estage"|"Mstage"|"Wstage"
 "operand_map"			{ return TOKEN_OPERAND_MAP; }
 "operand_sem"			{ return TOKEN_OPERAND_SEM; }
 "operand_hw_decode"		{ return TOKEN_OPERAND_HW_DECODE; }
+"package"			{ return TOKEN_PACKAGE; }
 
 {AdditiveOperator}		{ return TOKEN_ADDITIVE_OPERATOR; }
 {RelationalOperator}		{ return TOKEN_RELATIONAL_OPERATOR; }
@@ -103,5 +106,6 @@ Stage "Rstage"|"Estage"|"Mstage"|"Wstage"
 {SizedLiteral}			{ return TOKEN_SIZED_NUMBER; }
 {Separator}			{ return *yytext; }
 {Stage}				{ return TOKEN_STAGE_NAME; }
+{StringLiteral}			{ return TOKEN_STRING_LITERAL; }
 
 %%
