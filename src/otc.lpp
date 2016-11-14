@@ -92,6 +92,8 @@ StringLiteral "\""[^\"\n]*"\""
 "cstub_swap"			{ return TOKEN_CSTUB_SWAP; }
 "property"			{ return TOKEN_PROPERTY; }
 "specialized_op"		{ return TOKEN_SPECIALIZED_OP; }
+"enFLIX"			{ return TOKEN_EN_FLIX; }
+"enTIEcomp"			{ return TOKEN_EN_TIE_COMP; }
 "operator"			{ return TOKEN_OPERATOR; }
 "operand_map"			{ return TOKEN_OPERAND_MAP; }
 "operand_sem"			{ return TOKEN_OPERAND_SEM; }
