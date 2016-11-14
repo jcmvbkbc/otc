@@ -18,8 +18,9 @@ SizedLiteral {DecimalLiteral}"'"[bdh][0-9a-fA-F]+
 
 Letter [a-zA-Z_]
 Digit [0-9]
+IdentifierSpecial [.]
 
-Identifier {Letter}({Letter}|{Digit})*
+Identifier {Letter}({Letter}|{Digit}|{IdentifierSpecial})*
 AdditiveOperator [+-]
 RelationalOperator "=="|"!="|"<"|"<="|">"|">="
 BitwiseOperator [|&~^]
