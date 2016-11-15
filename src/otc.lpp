@@ -99,6 +99,8 @@ StringLiteral "\""[^\"\n]*"\""
 "operand_sem"			{ return TOKEN_OPERAND_SEM; }
 "operand_hw_decode"		{ return TOKEN_OPERAND_HW_DECODE; }
 "package"			{ return TOKEN_PACKAGE; }
+"wire"				{ return TOKEN_WIRE; }
+"assign"			{ return TOKEN_ASSIGN; }
 
 {AdditiveOperator}		{ return TOKEN_ADDITIVE_OPERATOR; }
 {RelationalOperator}		{ return TOKEN_RELATIONAL_OPERATOR; }

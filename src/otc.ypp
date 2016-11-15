@@ -106,6 +106,9 @@ extern char *yytext;
 
 %token TOKEN_STRING_LITERAL
 
+%token TOKEN_WIRE
+%token TOKEN_ASSIGN
+
 %%
 Program: SectionSequence
 	;
@@ -584,21 +587,33 @@ OperandSemType: TOKEN_IDENTIFIER
 	| TOKEN_IMMEDIATE
 	;
 
-OperandOptions: '{' Statements '}'
+OperandOptions: '{' ComputationBody '}'
 	| '{' Expression '}' '{' Expression '}'
 	| '{' Expression '}' '{' Expression '}' TOKEN_OPERAND_HW_DECODE
 	;
 
-
-Statements: /**/
+ComputationBody: /**/
+	| ComputationBody Statement
 	;
+
+Statement: Wires
+	| Assignment
+	;
+
+Wires: TOKEN_WIRE OptionalSlice IdentifierList
+	| TOKEN_WIRE OptionalSlice TOKEN_IDENTIFIER '=' Expression
+	;
+
+Assignment: TOKEN_ASSIGN Lhs '=' Expression
+	;
+
+Lhs: TOKEN_IDENTIFIER
+	| '{' IdentifierList '}'
+	;
+
 
 Expression: /**/
 	;
-
-ComputationBody: /**/
-	;
-
 
 Package: TOKEN_PACKAGE TOKEN_IDENTIFIER TOKEN_STRING_LITERAL
 
