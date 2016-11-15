@@ -376,7 +376,8 @@ LookupRdy: /**/
 CType: TOKEN_CTYPE TOKEN_IDENTIFIER Number Number TOKEN_IDENTIFIER CTypeAttr
 	;
 
-CTypeAttr: TOKEN_DEFAULT
+CTypeAttr: /**/
+	| TOKEN_DEFAULT
 	| '{' CTypeList '}'
 	;
 
