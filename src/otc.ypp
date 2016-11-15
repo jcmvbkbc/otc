@@ -379,7 +379,7 @@ CTypeDef: TOKEN_IDENTIFIER TOKEN_IDENTIFIER
 	;
 
 
-Proto: TOKEN_PROTO TOKEN_IDENTIFIER '{' ProtoArgList '}' '{' TempArgList '}' '{' CodeList '}'
+Proto: TOKEN_PROTO TOKEN_IDENTIFIER '{' ProtoArgList '}' '{' OptionalTempArgList '}' '{' CodeList '}'
 	;
 
 ProtoArgList: ProtoArg
@@ -392,6 +392,10 @@ ProtoArg: Direction3 CTypeRef TOKEN_IDENTIFIER
 
 CTypeRef: TOKEN_IMMEDIATE
 	| TOKEN_IDENTIFIER
+	;
+
+OptionalTempArgList: /**/
+	| TempArgList
 	;
 
 TempArgList: TempArg
