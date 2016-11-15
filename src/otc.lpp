@@ -107,11 +107,11 @@ StringLiteral "\""[^\"\n]*"\""
 {RelationalOperator}		{ return TOKEN_RELATIONAL_OPERATOR; }
 {BitwiseXorOperator}		{ return TOKEN_BITWISE_XOR_OPERATOR; }
 {ShiftOperator}			{ return TOKEN_SHIFT_OPERATOR; }
+{Stage}				{ return TOKEN_STAGE_NAME; }
 {Identifier}			{ return TOKEN_IDENTIFIER; }
 {IntegerLiteral}		{ return TOKEN_NUMBER; }
 {SizedLiteral}			{ return TOKEN_SIZED_NUMBER; }
 {Separator}			{ return *yytext; }
-{Stage}				{ return TOKEN_STAGE_NAME; }
 {StringLiteral}			{ return TOKEN_STRING_LITERAL; }
 
 %%
