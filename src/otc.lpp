@@ -66,6 +66,7 @@ StringLiteral "\""[^\"]*"\""
 "def"				{ return TOKEN_DEF; }
 "use"				{ return TOKEN_USE; }
 "semantic"			{ return TOKEN_SEMANTIC; }
+"format"			{ return TOKEN_FORMAT; }
 "length"			{ return TOKEN_LENGTH; }
 "InstBuf"			{ return TOKEN_INST_BUF; }
 "slot"				{ return TOKEN_SLOT; }
