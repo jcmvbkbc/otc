@@ -97,7 +97,10 @@ StringLiteral "\""[^\"]*"\""
 "operand_map"			{ return TOKEN_OPERAND_MAP; }
 "operand_sem"			{ return TOKEN_OPERAND_SEM; }
 "operand_hw_decode"		{ return TOKEN_OPERAND_HW_DECODE; }
+"synopsis"			{ return TOKEN_SYNOPSIS; }
+"description"			{ return TOKEN_DESCRIPTION; }
 "package"			{ return TOKEN_PACKAGE; }
+"endpackage"			{ return TOKEN_END_PACKAGE; }
 "wire"				{ return TOKEN_WIRE; }
 "assign"			{ return TOKEN_ASSIGN; }
 
