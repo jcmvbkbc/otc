@@ -114,4 +114,6 @@ StringLiteral "\""[^\"]*"\""
 {Separator}			{ return *yytext; }
 {StringLiteral}			{ return TOKEN_STRING_LITERAL; }
 
+{Whitespace}
+
 %%
