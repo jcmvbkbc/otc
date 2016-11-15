@@ -97,6 +97,7 @@ StringLiteral "\""[^\"]*"\""
 "description"			{ return TOKEN_DESCRIPTION; }
 "default"			{ return TOKEN_DEFAULT; }
 "def"				{ return TOKEN_DEF; }
+"data_gate"			{ return TOKEN_DATA_GATE; }
 "ctype"				{ return TOKEN_CTYPE; }
 "cstub_swap"			{ return TOKEN_CSTUB_SWAP; }
 "core"				{ return TOKEN_CORE; }
