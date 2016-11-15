@@ -55,6 +55,7 @@ StringLiteral "\""[^\"]*"\""
 "slot_shared"			{ return TOKEN_SLOT_SHARED; }
 "slot_opcodes"			{ return TOKEN_SLOT_OPCODES; }
 "slot"				{ return TOKEN_SLOT; }
+"shared_semantic"		{ return TOKEN_SHARED_SEMANTIC; }
 "shared_or"			{ return TOKEN_SHARED_OR; }
 "shared"			{ return TOKEN_SHARED; }
 "semantic"			{ return TOKEN_SEMANTIC; }
