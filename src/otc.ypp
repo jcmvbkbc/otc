@@ -628,7 +628,83 @@ Lhs: TOKEN_IDENTIFIER
 	;
 
 
-Expression: /**/
+Expression: TernaryExpression
+	;
+
+TernaryExpression: LogicalOrExpression '?' Expression ':' Expression
+	| LogicalOrExpression
+	;
+
+LogicalOrExpression: LogicalOrExpression TOKEN_LOGICAL_OR_OPERATOR LogicalAndExpression
+	| LogicalAndExpression
+	;
+
+LogicalAndExpression: LogicalAndExpression TOKEN_AND BitwiseOrExpression
+	| BitwiseOrExpression
+	;
+
+BitwiseOrExpression: BitwiseOrExpression '|' BitwiseXorExpression
+	| BitwiseXorExpression
+	;
+
+BitwiseXorExpression: BitwiseXorExpression TOKEN_BITWISE_XOR_OPERATOR BitwiseAndExpression
+	| BitwiseAndExpression
+	;
+
+BitwiseAndExpression: BitwiseAndExpression '&' EqualityExpression
+	| EqualityExpression
+	;
+
+EqualityExpression: EqualityExpression TOKEN_EQUALITY_OPERATOR RelationalExpression
+	| RelationalExpression
+	;
+
+RelationalExpression: RelationalExpression TOKEN_RELATIONAL_OPERATOR ShiftExpression
+	| ShiftExpression
+	;
+
+ShiftExpression: ShiftExpression TOKEN_SHIFT_OPERATOR AdditiveExpression
+	| AdditiveExpression
+	;
+
+AdditiveExpression: AdditiveExpression TOKEN_ADDITIVE_OPERATOR MultiplicativeExpression
+	| MultiplicativeExpression
+	;
+
+MultiplicativeExpression: MultiplicativeExpression '*' UnaryExpression
+	| UnaryExpression
+	;
+
+UnaryExpression: '~' UnaryExpression
+	| '!' UnaryExpression
+	| '&' UnaryExpression
+	| '|' UnaryExpression
+	| TOKEN_BITWISE_XOR_OPERATOR UnaryExpression
+	| ConcatenationExpression
+	;
+
+ConcatenationExpression: '{' ExpressionList '}'
+	| '{' TOKEN_NUMBER '{' Expression '}' '}'
+	| BitExtractionExpression
+	;
+
+BitExtractionExpression: BitExtractionExpression '[' SliceOrNumber ']'
+	| TrivialExpression
+	;
+
+TrivialExpression: '(' Expression ')'
+	| FunctionCall
+	| TOKEN_IDENTIFIER
+	| TOKEN_NUMBER
+	| TOKEN_SIZED_NUMBER
+	;
+
+FunctionCall: TOKEN_IDENTIFIER '(' ExpressionList ')'
+	;
+
+ExpressionList: Expression
+	| ExpressionList ',' Expression
+	;
 
 
 Synopsis: TOKEN_SYNOPSIS TOKEN_IDENTIFIER TOKEN_STRING_LITERAL
