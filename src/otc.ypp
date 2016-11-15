@@ -252,7 +252,6 @@ ArgumentList: Argument
 	;
 
 Argument: Direction3 TypedArgument
-	| Direction3 '*' TypedArgument
 	;
 
 Direction3: Direction2
@@ -260,6 +259,7 @@ Direction3: Direction2
 	;
 
 TypedArgument: TOKEN_IDENTIFIER TOKEN_IDENTIFIER
+	| TOKEN_IDENTIFIER '*' TOKEN_IDENTIFIER
 	;
 
 OptionalStateInterfaceList: /**/
