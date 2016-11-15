@@ -698,7 +698,7 @@ UnaryExpression: '~' UnaryExpression
 	;
 
 ConcatenationExpression: '{' ExpressionList '}'
-	| '{' TOKEN_NUMBER '{' Expression '}' '}'
+	| TOKEN_NUMBER '{' Expression '}'
 	| BitExtractionExpression
 	;
 
