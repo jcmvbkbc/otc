@@ -20,9 +20,11 @@ IdentifierSpecial [.]
 
 Identifier {Letter}({Letter}|{Digit}|{IdentifierSpecial})*
 AdditiveOperator [+-]
-RelationalOperator "=="|"!="|"<"|"<="|">"|">="
-BitwiseOperator [|&~^]
-Separator [{}():;,*!=]|"["|"]"
+EqualityOperator "=="|"!="
+RelationalOperator "<"|"<="|">"|">="
+BitwiseXorOperator "^"|"^~"|"~^"
+ShiftOperator "<<"|">>"
+Separator [{}()?:;,*!=|~&]|"["|"]"
 Stage "Rstage"|"Estage"|"Mstage"|"Wstage"
 
 StringLiteral "\""[^\"\n]*"\""
@@ -44,7 +46,6 @@ StringLiteral "\""[^\"\n]*"\""
 "in"				{ return TOKEN_IN; }
 "out"				{ return TOKEN_OUT; }
 "inout"				{ return TOKEN_INOUT; }
-"=="				{ return TOKEN_EQ; }
 "&&"				{ return TOKEN_AND; }
 "->"				{ return TOKEN_ARROW; }
 
@@ -100,9 +101,12 @@ StringLiteral "\""[^\"\n]*"\""
 "wire"				{ return TOKEN_WIRE; }
 "assign"			{ return TOKEN_ASSIGN; }
 
+"||"				{ return TOKEN_LOGICAL_OR_OPERATOR; }
 {AdditiveOperator}		{ return TOKEN_ADDITIVE_OPERATOR; }
+{EqualityOperator}		{ return TOKEN_EQUALITY_OPERATOR; }
 {RelationalOperator}		{ return TOKEN_RELATIONAL_OPERATOR; }
-{BitwiseOperator}		{ return TOKEN_BITWISE_OPERATOR; }
+{BitwiseXorOperator}		{ return TOKEN_BITWISE_XOR_OPERATOR; }
+{ShiftOperator}			{ return TOKEN_SHIFT_OPERATOR; }
 {Identifier}			{ return TOKEN_IDENTIFIER; }
 {IntegerLiteral}		{ return TOKEN_NUMBER; }
 {SizedLiteral}			{ return TOKEN_SIZED_NUMBER; }

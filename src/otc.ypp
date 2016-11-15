@@ -7,7 +7,6 @@ extern char *yytext;
 
 %error-verbose
 
-%token TOKEN_EQ
 %token TOKEN_AND
 %token TOKEN_ARROW
 %token TOKEN_ADDITIVE_OPERATOR
@@ -108,6 +107,11 @@ extern char *yytext;
 
 %token TOKEN_WIRE
 %token TOKEN_ASSIGN
+
+%token TOKEN_LOGICAL_OR_OPERATOR
+%token TOKEN_EQUALITY_OPERATOR
+%token TOKEN_BITWISE_XOR_OPERATOR
+%token TOKEN_SHIFT_OPERATOR
 
 %%
 Program: SectionSequence
@@ -293,7 +297,7 @@ Length: TOKEN_LENGTH TOKEN_IDENTIFIER Number DecodingExpr
 DecodingExpr: '{' DecodingConstraint '}'
 	;
 
-DecodingConstraint: TOKEN_INST_BUF '[' SliceOrNumber ']' TOKEN_EQ TOKEN_SIZED_NUMBER
+DecodingConstraint: TOKEN_INST_BUF '[' SliceOrNumber ']' TOKEN_EQUALITY_OPERATOR TOKEN_SIZED_NUMBER
 	;
 
 SliceOrNumber: Slice
@@ -565,8 +569,13 @@ Operator: TOKEN_OPERATOR '"' OperatorSymbol '"' TOKEN_IDENTIFIER
 
 OperatorSymbol: TOKEN_ADDITIVE_OPERATOR
 	| MultiplicativeOperator
+	| TOKEN_EQUALITY_OPERATOR
 	| TOKEN_RELATIONAL_OPERATOR
 	| TOKEN_BITWISE_OPERATOR
+	| '|'
+	| '&'
+	| '^'
+	| '~'
 	| '!'
 	;
 
