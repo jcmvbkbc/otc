@@ -612,8 +612,8 @@ OperandOptions: '{' ComputationBody '}'
 	| '{' Expression '}' '{' Expression '}' TOKEN_OPERAND_HW_DECODE
 	;
 
-ComputationBody: /**/
-	| ComputationBody Statement
+ComputationBody: Statement ';'
+	| ComputationBody Statement ';'
 	;
 
 Statement: Wires
