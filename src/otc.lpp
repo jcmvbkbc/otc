@@ -9,12 +9,10 @@
 
 Whitespace [ \t\v]+
 
-OctalLiteral "0"[0-7]*
 DecimalLiteral [1-9][0-9]*
-HexadecimalLiteral "0x"[0-9a-fA-F]+
-IntegerLiteral {OctalLiteral}|{DecimalLiteral}|{HexadecimalLiteral}
+IntegerLiteral "0"|{DecimalLiteral}
 
-SizedLiteral {DecimalLiteral}"'"[bdh][0-9a-fA-F]+
+SizedLiteral {DecimalLiteral}"'"[bdh][0-9a-fA-FxX_]+
 
 Letter [a-zA-Z_]
 Digit [0-9]
