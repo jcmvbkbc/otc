@@ -17,6 +17,7 @@ extern char *yytext;
 %token TOKEN_IN
 %token TOKEN_OUT
 %token TOKEN_INOUT
+%token TOKEN_NO_BYPASS
 
 %token TOKEN_IMMEDIATE_RANGE
 
@@ -208,7 +209,15 @@ StateOption: TOKEN_ADD_READ_WRITE
 	;
 
 
-RegFile: TOKEN_REGFILE TOKEN_IDENTIFIER Number Number TOKEN_IDENTIFIER Groups
+RegFile: TOKEN_REGFILE TOKEN_IDENTIFIER Number Number TOKEN_IDENTIFIER OptNoBypass OptGroups
+	;
+
+OptNoBypass: /**/
+	| TOKEN_NO_BYPASS
+	;
+
+OptGroups: /**/
+	| Groups
 	;
 
 Groups: GroupList TOKEN_PORT

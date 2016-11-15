@@ -46,6 +46,7 @@ StringLiteral "\""[^\"]*"\""
 "in"				{ return TOKEN_IN; }
 "out"				{ return TOKEN_OUT; }
 "inout"				{ return TOKEN_INOUT; }
+"no_bypass"			{ return TOKEN_NO_BYPASS; }
 "&&"				{ return TOKEN_AND; }
 "->"				{ return TOKEN_ARROW; }
 
