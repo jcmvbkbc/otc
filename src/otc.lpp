@@ -27,7 +27,7 @@ ShiftOperator "<<"|">>"
 Separator [{}()?:;,*!=|~&]|"["|"]"
 Stage "Rstage"|"Estage"|"Mstage"|"Wstage"
 
-StringLiteral "\""[^\"\n]*"\""
+StringLiteral "\""[^\"]*"\""
 
 %x comment line_comment
 
