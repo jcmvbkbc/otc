@@ -554,24 +554,7 @@ Property: TOKEN_PROPERTY TOKEN_SPECIALIZED_OP TOKEN_IDENTIFIER TOKEN_IDENTIFIER
 	;
 
 
-Operator: TOKEN_OPERATOR '"' OperatorSymbol '"' TOKEN_IDENTIFIER
-	;
-
-OperatorSymbol: TOKEN_ADDITIVE_OPERATOR
-	| MultiplicativeOperator
-	| TOKEN_EQUALITY_OPERATOR
-	| TOKEN_RELATIONAL_OPERATOR
-	| TOKEN_BITWISE_OPERATOR
-	| '|'
-	| '&'
-	| '^'
-	| '~'
-	| '!'
-	;
-
-MultiplicativeOperator: '*'
-	| '/'
-	| '%'
+Operator: TOKEN_OPERATOR TOKEN_STRING_LITERAL TOKEN_IDENTIFIER
 	;
 
 
